@@ -1,0 +1,517 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 50px;
+    font-size: 2rem;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #036105;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Ajuste específico para el botón de "Volver a Tareas Diarias" */
+#backToDailyTasks {
+    margin-top: 10px; /* Reduce el margen superior */
+    margin-bottom: 20px; /* Añade un poco más de separación abajo */
+    padding: 8px 15px; /* Ajusta el tamaño del botón */
+    font-size: 0.9rem; /* Fuente un poco más pequeña */
+    background-color: #036105;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block; /* Evita ocupar todo el ancho */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Agrega una ligera sombra */
+}
+
+/* Resto del código CSS sigue igual */
+
+#endTask {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #036105;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#endTask:hover {
+    background-color: #024903;
+}
+
+#taskLog {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e8f5e9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#taskLog h2 {
+    color: #036105;
+    margin-bottom: 10px;
+}
+
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+#taskList li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+#taskList li:last-child {
+    border-bottom: none;
+}
+select {
+    margin-top: 20px;
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+/* Estilo para el menú desplegable */
+div {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select {
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+#clearTasks {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#clearTasks:hover {
+    background-color: #e63939;
+}
+.deleteTask {
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 0.9rem;
+    background-color: transparent;
+    color: #ff4d4d;
+    border: none;
+    cursor: pointer;
+}
+
+.deleteTask:hover {
+    color: #e63939;
+    font-weight: bold;
+}
+#calendarBar {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin: 20px auto; /* Centramos verticalmente y horizontalmente */
+    padding: 5px 15px; /* Reducir el relleno interno y añadir espacio a los lados */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    overflow-x: auto; /* Permitir desplazamiento horizontal */
+    white-space: nowrap; /* Evitar que los días se envuelvan */
+    max-width: 70%; /* Reduce el ancho para que haya más espacio */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+}
+.calendarContainer {
+    display: flex;
+    justify-content: center;
+    overflow: hidden; /* Ocultar cualquier desbordamiento vertical */
+}
+
+.calendarDay {
+    padding: 5px 10px; /* Más pequeños que antes */
+    background-color: #036105;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem; /* Tamaño de texto reducido */
+    flex-shrink: 0; /* Evita que se reduzcan */
+}
+
+.calendarDay:hover {
+    background-color: #024903;
+}
+
+.selectedDay {
+    background-color: #00b33c;
+    font-weight: bold;
+}
+
+.selectedDay {
+    background-color: #00b33c;
+    font-weight: bold;
+}
+
+#selectedDate {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#timeline {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr); /* 24 columnas para 24 horas */
+    gap: 2px; /* Espacio entre columnas */
+    background-color: #f4f4f4;
+    height: 60px; /* Altura suficiente */
+    width: 80%;
+    margin: 10px auto;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative; /* Para posicionar tareas */
+    overflow: hidden;
+}
+
+.taskBar {
+    height: 20px;
+    border-radius: 3px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    white-space: nowrap;
+    padding: 0 5px;
+    margin: 11px 0 0; /* Margen superior añadido */
+    background-color: #007bff;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.taskBar.trabajo {
+    background-color: #007bff; /* Azul para Trabajo */
+}
+
+.taskBar.ocio {
+    background-color: #28a745; /* Verde para Ocio */
+}
+
+.taskBar.estudio {
+    background-color: #ffc107; /* Amarillo para Estudio */
+}
+
+.taskBar.otro {
+    background-color: #6c757d; /* Gris para Otros */
+}
+
+.taskBar.completed {
+    background-color: #17a2b8; /* Turquesa para Completadas */
+}
+body {
+    margin: 20px; /* Márgenes uniformes alrededor del contenido */
+    font-family: Arial, sans-serif; /* Fuente limpia */
+    background-color: #f4f4f4; /* Color de fondo */
+    color: #333; /* Color del texto */
+}
+
+.container {
+    margin: 0 auto; /* Centrar el contenido horizontalmente */
+    max-width: 1200px; /* Limitar el ancho máximo de la página */
+    padding: 20px; /* Espaciado interno */
+    background-color: white; /* Fondo blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombras suaves */
+}
+body {
+    display: flex;
+    margin: 0;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #036105;
+    color: white;
+    height: 100vh; /* Toda la altura de la pantalla */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar button {
+    background-color: #024903;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+}
+
+.sidebar button:hover {
+    background-color: #00b33c;
+}
+
+.sidebar button:first-child {
+    margin-top: 60px; /* Espacio más grande solo para el primer botón */
+}
+
+
+.mainContent {
+    flex-grow: 1;
+    padding: 20px;
+}
+/* Estilo del icono de menú */
+.menuToggle {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #036105;
+    color: white;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.menuToggle:hover {
+    background-color: #024903; /* Cambia el color al pasar el ratón */
+}
+
+/* Estilo inicial para ocultar la barra lateral */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Mover fuera de la pantalla */
+    width: 250px;
+    background-color: #036105;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease; /* Animación suave */
+    z-index: 999;
+}
+
+/* Clase para mostrar la barra lateral */
+.menuToggle {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #036105;
+    color: white;
+    position: fixed;
+    top: 10px;
+    left: 15px; /* Posición inicial */
+    border-radius: 5px;
+    z-index: 1001; /* Asegúrate de que siempre esté por encima del contenido */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, left 0.3s ease; /* Transición suave */
+}
+
+.sidebar.show ~ .menuToggle {
+    left: 220px; /* Ajusta para que se alinee con el borde de la barra lateral */
+    transition: left 0.3s ease;
+}
+
+/* Clase para mostrar la barra lateral */
+.sidebar.show {
+    left: 0; /* Mostrar la barra lateral */
+}
+
+/* Botones dentro de la barra lateral */
+.sidebar button {
+    background-color: #024903;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.sidebar button:hover {
+    background-color: #00b33c;
+    transform: translateX(10px); /* Animación de movimiento */
+}
+
+
+.mainContent {
+    margin-left: 0;
+    transition: margin-left 0.3s ease; /* Animación suave para el contenido */
+    padding-left: 20px; /* Agrega espacio para separar la barra lateral del contenido */
+    padding-right: 20px; /* Agrega margen a la derecha para el diseño general */
+}
+
+.sidebar.show ~ .mainContent {
+    margin-left: 260px; /* Empuja el contenido hacia la derecha cuando la barra lateral está activa */
+
+}
+
+#timeLabels {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; /* Centra verticalmente las etiquetas */
+    margin: 0 auto; /* Centrar horizontalmente */
+    height: 40px; /* Altura suficiente para las horas */
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0 20px; /* Añade margen interno para separación */
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 80%; /* Asegura que tenga el mismo ancho que la barra */
+    position: relative; /* Asegura que mantenga relación con la barra */
+    top: -10px; /* Ajusta para alinear verticalmente con la barra de tareas */
+}
+
+.timeLabel {
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 1.5; /* Ajusta la altura de línea */
+    color: #333;
+    border-right: 1px solid #ccc; /* Línea divisoria entre horas */
+    flex: 1; /* Cada etiqueta toma exactamente la misma proporción */
+    display: flex;
+    align-items: center; /* Centra verticalmente el texto */
+    justify-content: center; /* Centra horizontalmente el texto */
+    box-sizing: border-box;
+    margin: 0; /* Quita márgenes */
+    padding: 0; /* Quita padding */
+}
+
+.timeLabel:last-child {
+    border-right: none; /* Quitar la línea para la última etiqueta */
+}
+
+.hourCell {
+    background-color: transparent; /* Las celdas son invisibles */
+    border: none; /* Sin bordes visibles */
+    position: relative; /* Mantiene posición para el span */
+}
+
+
+.hourCell span {
+    position: absolute;
+    bottom: -15px; /* Mueve los números un poco más abajo */
+    left: 0;
+    width: 100%;
+    font-size: 0.7rem;
+    color: #333;
+    text-align: center;
+    pointer-events: none;
+}
+
+.hourMark {
+    position: absolute;
+    bottom: -33.5px; /* Ajustado para estar cerca de los números */
+    left: 0; /* Posicionado al borde izquierdo de la celda */
+    height: 10px; /* Altura de la línea */
+    width: 0.5px; /* Grosor uniforme */
+    background-color: #333; /* Color de la línea */
+}
+
+#startTime, #endTime, #customStartTime, #customEndTime {
+    width: 80px; /* Ajusta el ancho para que solo quepa "HH:MM" */
+    text-align: center; /* Centra el texto dentro del campo */
+}
+
+#customTaskComment {
+    width: 50%; /* Mantiene el ancho adecuado */
+    height: 80px; /* Altura fija */
+    margin: 0 auto; /* Centra horizontalmente */
+    display: block; /* Asegura que quede en una línea separada */
+    margin-top: 5px; /* Espacio entre el label y el campo */
+    font-size: 14px; /* Tamaño de texto para armonizar con el resto */
+    border: 1px solid #ccc; /* Bordes uniformes */
+    border-radius: 5px; /* Bordes redondeados */
+    box-sizing: border-box; /* Incluye el padding en el ancho */
+}
+
+/* Aspecto de la ventana emergente al clickar en tareas*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
