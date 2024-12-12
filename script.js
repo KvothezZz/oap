@@ -666,7 +666,7 @@ startButton.addEventListener('click', () => {
         return;
     }
 
-    // Selecciona la tarea con el menor margen izquierdo (más cercana en el tiempo)
+    // Selecciona la tarea más cercana
     let closestTask = taskBars[0];
     let closestLeft = parseFloat(closestTask.style.left);
     taskBars.forEach(task => {
@@ -677,12 +677,13 @@ startButton.addEventListener('click', () => {
         }
     });
 
-    // Cambia el color de la tarea a verde
-    closestTask.style.backgroundColor = '#10F9FF'; 
+    // Asegurar que el color y estado de inicio sean coherentes
+    closestTask.style.backgroundColor = '#10F9FF'; // Color para tarea iniciada
+    closestTask.dataset.status = 'inProgress'; // Marca como en curso
 
     // Marca la tarea seleccionada como actual
     currentTaskBar = closestTask;
-    startTime = new Date(); // Hora de inicio
+    startTime = new Date(); // Registra la hora de inicio
     alert(`La tarea "${currentTaskBar.textContent}" ha sido iniciada.`);
 });
 
@@ -764,59 +765,72 @@ createCustomTaskButton.addEventListener('click', () => {
     const taskDate = document.getElementById('customDate').value.trim();
     const startTimeValue = document.getElementById('customStartTime').value.trim();
     const endTimeValue = document.getElementById('customEndTime').value.trim();
-    const category = document.getElementById('customCategory').value;
+    const category = document.getElementById('customCategory').value.trim().toLowerCase();
+
+    // Validar datos básicos
+    if (!taskName || !taskDate || !startTimeValue || !endTimeValue) {
+        alert('Por favor, completa todos los campos correctamente.');
+        return;
+    }
 
     // Validar formato de las horas
     const isValidTime = (time) => /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/.test(time);
-
-    if (!taskName || !taskDate || !isValidTime(startTimeValue) || !isValidTime(endTimeValue)) {
-        alert('Por favor, completa todos los campos correctamente.');
+    if (!isValidTime(startTimeValue) || !isValidTime(endTimeValue)) {
+        alert('Formato de hora inválido. Usa HH:MM.');
         return;
     }
 
     const [startHour, startMinute] = startTimeValue.split(':').map(Number);
     const [endHour, endMinute] = endTimeValue.split(':').map(Number);
 
-    // Validar que la hora de fin sea posterior a la hora de inicio
     if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
         alert('La hora de finalización debe ser posterior a la de inicio.');
         return;
     }
 
+    // Crear la nueva tarea
     const newTask = {
-        name: taskName, // Toma el valor del campo de texto "customTaskName"
+        name: taskName,
         startHour,
         startMinute,
         endHour,
         endMinute,
-        category: category.trim(),
+        category: category.toLowerCase(),
         comment: document.getElementById('customTaskComment').value.trim(),
-        date: taskDate // Asegúrate de incluir la fecha
-    };    
+        date: taskDate
+    };
 
-    console.log("Nueva tarea creada:", newTask);
-
-    // Inicializar el array para la fecha si no existe
+    // Asegurar que exista la fecha en `tasksByDate`
     if (!tasksByDate[taskDate]) {
-        console.log(`Inicializando tareas para la fecha: ${taskDate}`);
         tasksByDate[taskDate] = [];
     }
-    
-    tasksByDate[taskDate].push(newTask);
-    console.log(`Tareas actuales para ${taskDate}:`, tasksByDate[taskDate]);
 
-    // Guardar tareas actualizadas en localStorage
+    tasksByDate[taskDate].push(newTask);
     saveTasksToLocalStorage();
 
-    // Actualizar el timeline solo si la tarea pertenece al día seleccionado
-    const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
-    if (selectedDate === taskDate) {
-        console.log(`Actualizando el timeline para la fecha seleccionada (${selectedDate}) con las tareas:`, tasksByDate[taskDate]);
-        updateTimeline(tasksByDate[taskDate]);
-    }
+    // Mostrar una sola notificación por tarea creada
+    const existingAlert = document.querySelector('.task-created-alert');
+    if (!existingAlert) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'task-created-alert';
+        alertDiv.textContent = `Tarea "${taskName}" creada para el ${taskDate}`;
+        alertDiv.style.position = 'fixed';
+        alertDiv.style.bottom = '20px';
+        alertDiv.style.left = '50%';
+        alertDiv.style.transform = 'translateX(-50%)';
+        alertDiv.style.padding = '10px 20px';
+        alertDiv.style.backgroundColor = '#036105';
+        alertDiv.style.color = '#fff';
+        alertDiv.style.borderRadius = '5px';
+        alertDiv.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+        alertDiv.style.zIndex = '1000';
 
-    // Lanzar el mensaje de confirmación
-    alert(`Tarea "${taskName}" creada para el ${taskDate} de ${startHour}:${startMinute.toString().padStart(2, '0')} a ${endHour}:${endMinute.toString().padStart(2, '0')}`);
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000); // La alerta desaparecerá después de 3 segundos
+    }
 });
 
 // Prevenir el desplazamiento vertical de la página cuando se interactúa con el calendario
