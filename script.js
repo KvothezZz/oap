@@ -8,17 +8,93 @@ const selectedDateDisplay = document.getElementById('selectedDate');
 const timeline = document.getElementById('timeline');
 const timeLabels = document.getElementById('timeLabels');
 // Referencias a elementos de la ventana emergente
-const taskModal = document.getElementById('taskModal');
-const closeModal = document.getElementById('closeModal');
-const taskNameSpan = document.getElementById('taskName');
-const taskDateSpan = document.getElementById('taskDate');
-const taskStartTimeSpan = document.getElementById('taskStartTime');
-const taskEndTimeSpan = document.getElementById('taskEndTime');
-const taskCategorySpan = document.getElementById('taskCategory');
+// Declarar las variables fuera del DOMContentLoaded para que sean accesibles globalmente
+let taskModal, closeModal, taskNameSpan, taskDateSpan, taskStartTimeSpan, taskEndTimeSpan, taskCategorySpan;
+
+document.addEventListener('DOMContentLoaded', () => {
+    taskModal = document.getElementById('taskModal');
+    closeModal = document.getElementById('closeModal');
+    taskNameSpan = document.getElementById('taskName');
+    taskDateSpan = document.getElementById('taskDate');
+    taskStartTimeSpan = document.getElementById('taskStartTime');
+    taskEndTimeSpan = document.getElementById('taskEndTime');
+    taskCategorySpan = document.getElementById('taskCategory');
+
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            if (taskModal) {
+                taskModal.style.display = 'none'; // Oculta el modal
+            }
+        });
+    }    
+});
 
 // Botón para cambiar a "Personalizar Calendario"
 const customizeCalendarViewButton = document.getElementById('customizeCalendarView');
 const backToDailyTasksButton = document.getElementById('backToDailyTasks');
+
+// Referencias a los botones
+const exportTasksButton = document.getElementById('exportTasks');
+const importTasksButton = document.getElementById('importTasks');
+const importFileInput = document.getElementById('importFileInput');
+
+
+// Función para exportar tareas a un archivo JSON
+exportTasksButton.addEventListener('click', () => {
+    const dataStr = JSON.stringify(tasksByDate, null, 2); // Convierte las tareas a JSON
+    const blob = new Blob([dataStr], { type: 'application/json' }); // Crea un archivo JSON
+    const url = URL.createObjectURL(blob);
+
+    // Crear un enlace para descargar el archivo
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tasks_backup.json';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click(); // Descarga el archivo
+    document.body.removeChild(a);
+
+    alert('Las tareas se han exportado correctamente.');
+});
+
+// Función para importar tareas desde un archivo JSON
+importTasksButton.addEventListener('click', () => {
+    importFileInput.click(); // Abre el selector de archivos
+});
+
+importFileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        try {
+            const importedTasks = JSON.parse(e.target.result); // Lee el contenido del archivo
+
+            // Validar que sea un objeto con el formato esperado
+            if (typeof importedTasks !== 'object' || Array.isArray(importedTasks)) {
+                alert('El archivo no tiene un formato válido.');
+                return;
+            }
+
+            // Actualizar las tareas actuales
+            tasksByDate = { ...tasksByDate, ...importedTasks }; // Mezclar tareas actuales con las importadas
+            saveTasksToLocalStorage(); // Guardar en localStorage
+
+            // Actualizar el timeline con las tareas importadas
+            const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+            const tasksForDate = tasksByDate[selectedDate] || [];
+            updateTimeline(tasksForDate);
+
+            alert('Las tareas se han importado correctamente.');
+        } catch (error) {
+            alert('Error al importar las tareas. Asegúrate de que el archivo sea un JSON válido.');
+        }
+    };
+
+    reader.readAsText(file); // Leer el archivo como texto
+});
 
 function saveTasksToLocalStorage() {
     // Verificar que todos los valores en tasksByDate sean arrays
@@ -54,17 +130,44 @@ function loadTasksFromLocalStorage() {
 
 // Función para abrir la ventana emergente con la información de la tarea
 function openTaskModal(task) {
-    taskNameSpan.textContent = task.name;
-    taskDateSpan.textContent = task.date || 'No disponible'; // Por si falta el dato
-    taskStartTimeSpan.textContent = `${task.startHour}:${task.startMinute.toString().padStart(2, '0')}`;
-    taskEndTimeSpan.textContent = `${task.endHour}:${task.endMinute.toString().padStart(2, '0')}`;
-    taskCategorySpan.textContent = task.category || 'Sin categoría';
+    if (taskNameSpan) {
+        taskNameSpan.textContent = task.name || 'Sin nombre';
+    }
 
-    // Mostrar la ventana emergente
-    taskModal.classList.remove('hidden');
-    taskModal.style.display = 'block';
+    if (taskDateSpan) {
+        if (task.date) {
+            const [year, month, day] = task.date.split('-');
+            taskDateSpan.textContent = `${day}/${month}/${year.slice(-2)}`; // Formato DD/MM/AA
+        } else {
+            taskDateSpan.textContent = 'No disponible';
+        }
+    }    
+
+    if (taskStartTimeSpan) {
+        taskStartTimeSpan.textContent = `${task.startHour}:${task.startMinute.toString().padStart(2, '0')}`;
+    }
+
+    if (taskEndTimeSpan) {
+        taskEndTimeSpan.textContent = `${task.endHour}:${task.endMinute.toString().padStart(2, '0')}`;
+    }
+
+    if (taskCategorySpan) {
+        taskCategorySpan.textContent = task.category || 'Sin categoría';
+    }
+
+    const taskCommentSpan = document.getElementById('taskComment'); // Añadimos esta referencia
+    if (taskCommentSpan) {
+        taskCommentSpan.textContent = task.comment || 'Sin comentarios'; // Mostramos el comentario
+    } else {
+        console.error('Elemento taskCommentSpan no encontrado.');
+    }
+
+    if (taskModal) {
+        taskModal.style.display = 'block';
+    } else {
+        console.error('Elemento taskModal no encontrado.');
+    }
 }
-
 
 function updateTimeline(tasksForDate) {
     console.log('Tareas recibidas para actualizar el timeline:', tasksForDate);
@@ -74,19 +177,26 @@ function updateTimeline(tasksForDate) {
     if (timelineWidth === 0) {
         console.warn('El ancho del timeline es 0. Cancelando renderizado. Asegúrate de que el contenedor #timeline esté visible.');
         return; // Cancela el renderizado sin reintentos
-    }    
+    }
 
     timeline.innerHTML = ''; // Limpia el timeline actual
     generateTimelineGrid(); // Vuelve a generar la estructura del timeline
 
     const totalMinutesInDay = 24 * 60; // Total de minutos en un día
 
+    // Función para ajustar la hora al nuevo rango horario (06:00 a 05:00)
+    const adjustHourToTimeline = (hour) => (hour - 6 + 24) % 24;
+
     tasksForDate.forEach(task => {
-        const startTotalMinutes = task.startHour * 60 + task.startMinute; // Minutos desde las 00:00
-        const endTotalMinutes = task.endHour * 60 + task.endMinute;
+        // Ajustar las horas de inicio y fin
+        const startAdjustedHour = adjustHourToTimeline(task.startHour);
+        const endAdjustedHour = adjustHourToTimeline(task.endHour);
+
+        const startTotalMinutes = startAdjustedHour * 60 + task.startMinute;
+        const endTotalMinutes = endAdjustedHour * 60 + task.endMinute;
 
         console.log(`Procesando tarea: ${task.name}`);
-        console.log(`Inicio en minutos totales: ${startTotalMinutes}, Fin: ${endTotalMinutes}`);
+        console.log(`Inicio en minutos ajustados: ${startTotalMinutes}, Fin ajustado: ${endTotalMinutes}`);
 
         // Validación básica
         if (endTotalMinutes <= startTotalMinutes) {
@@ -118,7 +228,7 @@ function updateTimeline(tasksForDate) {
         taskBar.style.left = `${taskStartPosition}px`;
         taskBar.style.width = `${taskWidth}px`;
         taskBar.textContent = task.name;
-        
+
         // Asociar información de la tarea al elemento (dataset)
         taskBar.dataset.taskName = task.name;
         taskBar.dataset.taskDate = typeof task.date === 'string' ? task.date : selectedDate;
@@ -126,13 +236,13 @@ function updateTimeline(tasksForDate) {
         taskBar.dataset.startMinute = task.startMinute;
         taskBar.dataset.endHour = task.endHour;
         taskBar.dataset.endMinute = task.endMinute;
-        
+
         // Añadir un evento click para mostrar información en la consola
         taskBar.addEventListener('click', () => {
             openTaskModal(task); // Llama a la función para abrir la ventana emergente
-        });        
-        
-        timeline.appendChild(taskBar);        
+        });
+
+        timeline.appendChild(taskBar);
     });
 }
 
@@ -223,13 +333,13 @@ let currentTaskBar = null; // Referencia a la barra actual
 let tasksByDate = {}; // Objeto para almacenar tareas por fecha
 
 // Crear la estructura de celdas del timeline
-// Crear la estructura de celdas del timeline
 function generateTimelineGrid() {
     const timeline = document.getElementById('timeline'); // Seleccionar el contenedor
     timeline.innerHTML = ''; // Limpiar contenido previo
 
-    // Generar 24 celdas, una para cada hora
-    for (let hour = 0; hour < 24; hour++) {
+    // Generar las celdas, comenzando desde las 06:00 hasta las 05:00
+    for (let i = 0; i < 24; i++) {
+        const hour = (i + 6) % 24; // Ajustar el horario para que comience en 06:00
         const hourCell = document.createElement('div');
         hourCell.classList.add('hourCell'); // Clase para estilo
         hourCell.dataset.hour = hour; // Guardar hora en atributo data
@@ -314,6 +424,9 @@ function recalculateTaskPositions() {
     const timelineWidth = timeline.offsetWidth; // Obtener el ancho actualizado del timeline
     const totalMinutesInDay = 24 * 60; // Total de minutos en un día
 
+    // Función para ajustar la hora al nuevo rango horario (06:00 a 05:00)
+    const adjustHourToTimeline = (hour) => (hour - 6 + 24) % 24;
+
     // Limpiar todas las barras de tareas antes de recalcular posiciones
     timeline.querySelectorAll('.taskBar').forEach(taskBar => taskBar.remove());
 
@@ -321,8 +434,12 @@ function recalculateTaskPositions() {
     Object.entries(tasksByDate).forEach(([date, tasksForDate]) => {
         if (Array.isArray(tasksForDate)) {
             tasksForDate.forEach(task => {
-                const startTotalMinutes = task.startHour * 60 + task.startMinute;
-                const endTotalMinutes = task.endHour * 60 + task.endMinute;
+                // Ajustar las horas de inicio y fin
+                const startAdjustedHour = adjustHourToTimeline(task.startHour);
+                const endAdjustedHour = adjustHourToTimeline(task.endHour);
+
+                const startTotalMinutes = startAdjustedHour * 60 + task.startMinute;
+                const endTotalMinutes = endAdjustedHour * 60 + task.endMinute;
 
                 // Calcular posición inicial y ancho en píxeles
                 const taskStartPosition = (startTotalMinutes / totalMinutesInDay) * timelineWidth;
@@ -349,7 +466,7 @@ function recalculateTaskPositions() {
                     // Añadir un evento click para mostrar información en la consola
                     taskBar.addEventListener('click', () => {
                         openTaskModal(task); // Llama a la función para abrir la ventana emergente
-                    });                    
+                    });
 
                     timeline.appendChild(taskBar); // Añadir la barra al timeline
                 } else {
@@ -430,8 +547,15 @@ createButton.addEventListener('click', () => {
     const totalMinutesInDay = 24 * 60;
     const timelineWidth = timeline.offsetWidth;
 
-    const startTotalMinutes = startHour * 60 + startMinute;
-    const endTotalMinutes = endHour * 60 + endMinute;
+    // Función para ajustar la hora al nuevo rango horario (06:00 a 05:00)
+    const adjustHourToTimeline = (hour) => (hour - 6 + 24) % 24;
+
+    // Ajustar las horas de inicio y fin
+    const startAdjustedHour = adjustHourToTimeline(startHour);
+    const endAdjustedHour = adjustHourToTimeline(endHour);
+
+    const startTotalMinutes = startAdjustedHour * 60 + startMinute;
+    const endTotalMinutes = endAdjustedHour * 60 + endMinute;
 
     const taskStartPosition = (startTotalMinutes / totalMinutesInDay) * timelineWidth; // Posición inicial en píxeles
     const taskWidth = ((endTotalMinutes - startTotalMinutes) / totalMinutesInDay) * timelineWidth; // Ancho en píxeles
@@ -445,6 +569,21 @@ createButton.addEventListener('click', () => {
     taskBar.style.width = `${taskWidth}px`;
     taskBar.style.top = `0px`;
     taskBar.textContent = `${categorySelect.value}`;
+
+// Añadir evento para abrir el modal al hacer clic
+taskBar.addEventListener('click', () => {
+    openTaskModal({
+        name: categorySelect.value,
+        startHour,
+        startMinute,
+        endHour,
+        endMinute,
+        category: categorySelect.value.toLowerCase(),
+    });
+});
+
+timeline.appendChild(taskBar);
+
 
     timeline.appendChild(taskBar);
 
@@ -476,6 +615,9 @@ startButton.addEventListener('click', () => {
             closestLeft = taskLeft;
         }
     });
+
+    // Cambia el color de la tarea a verde
+    closestTask.style.backgroundColor = '#10F9FF'; 
 
     // Marca la tarea seleccionada como actual
     currentTaskBar = closestTask;
@@ -581,13 +723,15 @@ createCustomTaskButton.addEventListener('click', () => {
     }
 
     const newTask = {
-        name: taskName,
+        name: taskName, // Toma el valor del campo de texto "customTaskName"
         startHour,
         startMinute,
         endHour,
         endMinute,
-        category: category.toLowerCase()
-    };
+        category: category.trim(),
+        comment: document.getElementById('customTaskComment').value.trim(),
+        date: taskDate // Asegúrate de incluir la fecha
+    };    
 
     console.log("Nueva tarea creada:", newTask);
 
