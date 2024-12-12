@@ -406,20 +406,19 @@ body {
     }
 
     #timeline {
-        display: flex; /* Cambia a diseño flexible */
-        overflow-x: auto; /* Permite desplazamiento horizontal */
-        white-space: nowrap; /* Evita que las horas se acumulen en varias líneas */
+        display: grid;
+        grid-template-columns: repeat(24, 1fr); /* 24 columnas para 24 horas */
+        gap: 2px; /* Espacio entre columnas */
         background-color: #f4f4f4;
-        height: 50px; /* Reduce la altura para móviles */
-        width: 100%; /* Usa todo el ancho disponible */
-        margin: 10px auto;
+        height: 60px; /* Altura suficiente */
+        width: 80%; /* Ancho predeterminado */
+        margin: 10px auto; /* Centra el timeline */
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        position: relative;
-        -webkit-overflow-scrolling: touch; /* Suaviza el desplazamiento en móviles */
-        gap: 5px; /* Ajusta el espacio entre las horas */
-    }       
+        position: relative; /* Para posicionar tareas */
+        overflow: hidden; /* Oculta cualquier desbordamiento */
+    }               
 
     .taskBar {
         font-size: 0.6rem; /* Ajusta el tamaño de la fuente para que encaje mejor */
