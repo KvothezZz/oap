@@ -406,9 +406,14 @@ body {
     }
 
     #timeline {
-        width: 100%; /* El timeline debe ocupar todo el ancho en móviles */
-        grid-template-columns: repeat(12, 1fr); /* Reduce a 12 columnas para pantallas pequeñas */
-        height: 50px; /* Reduce la altura del timeline */
+        display: flex; /* Cambiamos a diseño flexible */
+        overflow-x: auto; /* Permitimos desplazamiento horizontal */
+        white-space: nowrap; /* Evita que las tareas salten a la siguiente línea */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        padding: 5px; /* Espacio adicional para interacción táctil */
+        -webkit-overflow-scrolling: touch; /* Suaviza el desplazamiento en dispositivos táctiles */
+        scroll-behavior: smooth; /* Desplazamiento fluido */
+        height: 60px; /* Ajusta la altura */
     }
 
     .taskBar {
