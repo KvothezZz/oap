@@ -8,22 +8,21 @@
     <link rel="icon" type="image/jpg" href="image.png"/>
 </head>
 <body>
-     <!-- Icono para mostrar la barra lateral -->
-     <div id="menuToggle" class="menuToggle">
+    <!-- Icono para mostrar la barra lateral -->
+    <div id="menuToggle" class="menuToggle">
         ☰
     </div>
+
     <!-- Barra lateral -->
     <div class="sidebar" id="sidebar">
         <button id="dailyTasksView">Tareas diarias</button>
         <button id="customizeCalendarView">Personalizar calendario</button>
     </div>
      
-
     <!-- Contenedor principal -->
     <div class="mainContent" id="contentContainer">
-        <div id="dailyTasksContent">
-
-            <!-- Aquí va el contenido actual de tareas diarias -->
+        <!-- Contenido de Tareas Diarias -->
+        <div id="dailyTasksContent" class="content-section">
             <h1>Mi propio TOA</h1>
             <div id="calendarBar"></div>
             <p id="selectedDate">Fecha seleccionada: </p>
@@ -40,11 +39,11 @@
 
             <div>
                 <label for="startTime">Hora de inicio:</label>
-                <input type="text" id="startTime" placeholder="HH:MM (24h)">
+                <input type="text" id="startTime" inputmode="numeric" placeholder="HH:MM (24h)">
             </div>
             <div>
                 <label for="endTime">Hora de finalización:</label>
-                <input type="text" id="endTime" placeholder="HH:MM (24h)">
+                <input type="text" id="endTime" inputmode="numeric" placeholder="HH:MM (24h)">
             </div>                       
 
             <button id="startTask">Iniciar Tarea</button>
@@ -53,66 +52,73 @@
 
             <div id="timeline"></div>
 
+            <div id="backupControls">
+                <button id="exportTasks">Exportar Tareas</button>
+                <button id="importTasks">Importar Tareas</button>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;" />
+            </div>
+
             <button id="clearTasks">🗑️ Borrar Tareas</button>
         </div>
         
         <!-- Contenido para Personalizar Calendario -->
-        <div id="customizeCalendarContent" style="display: none;">
+        <div id="customizeCalendarContent" class="content-section" style="display: none;">
+            <h1>Personalizar Calendario</h1>
+            <button id="backToDailyTasks">Volver a Tareas Diarias</button>
+
+            <div>
+                <label for="customTaskName">Nombre de la Tarea:</label>
+                <input type="text" id="customTaskName">
+            </div>
+
+            <div>
+                <label for="customDate">Fecha:</label>
+                <input type="date" id="customDate">
+            </div>
+
+            <div>
+                <label for="customStartTime">Hora de Inicio:</label>
+                <input type="text" id="customStartTime" inputmode="numeric" placeholder="HH:MM (24h)">
+            </div>
+            <div>
+                <label for="customEndTime">Hora de Finalización:</label>
+                <input type="text" id="customEndTime" inputmode="numeric" placeholder="HH:MM (24h)">
+            </div>    
+
+            <div>
+                <label for="customCategory">Categoría:</label>
+                <select id="customCategory">
+                    <option value="Trabajo">Trabajo</option>
+                    <option value="Ocio">Ocio</option>
+                    <option value="Estudio">Estudio</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="customTaskComment">Comentario:</label>
+                <textarea id="customTaskComment" placeholder="Añade un comentario..." rows="4"></textarea>
+            </div>
             
-    <h1>Personalizar Calendario</h1>
-    <button id="backToDailyTasks">Volver a Tareas Diarias</button>
-
-    <div>
-        <label for="customTaskName">Nombre de la Tarea:</label>
-        <input type="text" id="customTaskName">
-    </div>
-
-    <div>
-        <label for="customDate">Fecha:</label>
-        <input type="date" id="customDate">
-    </div>
-
-    <div>
-        <label for="customStartTime">Hora de Inicio:</label>
-        <input type="text" id="customStartTime" placeholder="HH:MM (24h)">
-    </div>
-    <div>
-        <label for="customEndTime">Hora de Finalización:</label>
-        <input type="text" id="customEndTime" placeholder="HH:MM (24h)">
-    </div>    
-
-    <div>
-        <label for="customCategory">Categoría:</label>
-        <select id="customCategory">
-            <option value="Trabajo">Trabajo</option>
-            <option value="Ocio">Ocio</option>
-            <option value="Estudio">Estudio</option>
-            <option value="Otro">Otro</option>
-        </select>
-    </div>
-
-    <div>
-        <label for="customTaskComment">Comentario:</label>
-        <textarea id="customTaskComment" placeholder="Añade un comentario..." rows="4"></textarea>
-    </div>
-    
-    <button id="createCustomTask">Crear Tarea</button>
-</div>
-        <!-- Enlace al archivo de script -->
-        <script src="script.js"></script>
+            <button id="createCustomTask">Crear Tarea</button>
         </div>
 
-<div id="taskModal" class="modal hidden">
-    <div class="modal-content">
-        <span id="closeModal" class="close">&times;</span>
-        <h2>Información de la Tarea</h2>
-        <p><strong>Nombre:</strong> <span id="taskName"></span></p>
-        <p><strong>Fecha:</strong> <span id="taskDate"></span></p>
-        <p><strong>Hora de Inicio:</strong> <span id="taskStartTime"></span></p>
-        <p><strong>Hora de Finalización:</strong> <span id="taskEndTime"></span></p>
-        <p><strong>Categoría:</strong> <span id="taskCategory"></span></p>
+        <!-- Modal para mostrar detalles de la tarea -->
+        <div id="taskModal" class="modal hidden">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <h2>Detalles de la tarea</h2>
+                <p><strong>Nombre:</strong> <span id="taskName"></span></p>
+                <p><strong>Fecha:</strong> <span id="taskDate"></span></p>
+                <p><strong>Hora de Inicio:</strong> <span id="taskStartTime"></span></p>
+                <p><strong>Hora Final:</strong> <span id="taskEndTime"></span></p>
+                <p><strong>Categoría:</strong> <span id="taskCategory"></span></p>
+                <p><strong>Comentario:</strong> <span id="taskComment"></span></p>
+            </div>
+        </div>
     </div>
-</div>
-        
+
+    <!-- Enlace al archivo de script -->
+    <script src="script.js"></script>
 </body>
 </html>
