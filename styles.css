@@ -246,14 +246,20 @@ select {
     }
 
     #calendarBar {
-        flex-wrap: wrap; /* Permite que el calendario se ajuste mejor */
-        max-width: 90%; /* Aumenta el ancho */
+        display: flex; /* Coloca los días en línea */
+        flex-wrap: nowrap; /* Evita que se acumulen verticalmente */
+        overflow-x: auto; /* Permite desplazamiento horizontal */
+        white-space: nowrap; /* Impide el salto de línea */
+        gap: 10px; /* Mantiene el espacio entre los días */
+        max-width: 100%; /* Usa el ancho completo disponible */
+        padding: 10px;
         margin: 10px auto; /* Centra el calendario */
     }
 
     .calendarDay {
-        font-size: 0.8rem; /* Reduce el tamaño de las fechas */
-        padding: 4px 8px;
+        flex: 0 0 auto; /* Evita que los días se reduzcan o expandan */
+        font-size: 0.9rem; /* Ajusta el tamaño del texto */
+        padding: 5px 10px; /* Mantén un tamaño cómodo para tocar */
     }
 
     /* Ajusta la apariencia de los botones */
