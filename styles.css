@@ -254,7 +254,9 @@ select {
         max-width: 100%; /* Usa el ancho completo disponible */
         padding: 10px;
         margin: 10px auto; /* Centra el calendario */
-    }
+        -webkit-overflow-scrolling: touch; /* Suaviza el scroll en dispositivos táctiles */
+        scroll-behavior: smooth; /* Desplazamiento más fluido */
+    }    
 
     .calendarDay {
         flex: 0 0 auto; /* Evita que los días se reduzcan o expandan */
