@@ -758,4 +758,25 @@ createCustomTaskButton.addEventListener('click', () => {
     alert(`Tarea "${taskName}" creada para el ${taskDate} de ${startHour}:${startMinute.toString().padStart(2, '0')} a ${endHour}:${endMinute.toString().padStart(2, '0')}`);
 });
 
+// Prevenir el desplazamiento vertical de la página cuando se interactúa con el calendario
+calendarBar.addEventListener('touchstart', (event) => {
+    if (event.targetTouches.length === 1) {
+        // Solo ejecuta si hay un dedo en pantalla
+        calendarBar.dataset.scrollStartX = event.targetTouches[0].clientX;
+        calendarBar.dataset.scrollStartLeft = calendarBar.scrollLeft;
+    }
+});
+
+calendarBar.addEventListener('touchmove', (event) => {
+    if (event.targetTouches.length === 1) {
+        // Calcula la diferencia horizontal
+        const deltaX = event.targetTouches[0].clientX - calendarBar.dataset.scrollStartX;
+        calendarBar.scrollLeft = calendarBar.dataset.scrollStartLeft - deltaX;
+
+        // Prevenir el scroll vertical de la página
+        event.preventDefault();
+    }
+});
+
+
 });
