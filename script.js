@@ -675,15 +675,16 @@ startButton.addEventListener('click', () => {
         }
     });
 
-    // Ajustar color para tarea iniciada
-    closestTask.style.backgroundColor = '#10F9FF';
-    closestTask.dataset.status = 'inProgress';
+    // Cambiar el color para indicar que está en curso
+    closestTask.style.backgroundColor = '#10F9FF'; // Color para tareas iniciadas
+    closestTask.dataset.status = 'inProgress'; // Estado de tarea
 
+    // Registrar como tarea actual
     currentTaskBar = closestTask;
     startTime = new Date();
 
     alert(`La tarea "${currentTaskBar.textContent}" ha sido iniciada.`);
-}, { passive: false }); // Asegurar que los eventos táctiles no interfieran
+});
 
 
 endButton.addEventListener('click', () => {
@@ -695,29 +696,31 @@ endButton.addEventListener('click', () => {
     const endTime = new Date();
     const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-    const timelineWidth = timeline.offsetWidth;
+    const timelineWidth = timeline.offsetWidth || window.innerWidth;
     const totalMinutesInDay = 24 * 60;
+    const newWidth = Math.max((durationMinutes / totalMinutesInDay) * timelineWidth, 5); // Ancho mínimo 5px
 
-    const newWidth = Math.max((durationMinutes / totalMinutesInDay) * timelineWidth, 5);
-
+    // Actualizar el ancho de la barra y el color
     currentTaskBar.style.width = `${newWidth}px`;
     currentTaskBar.classList.add('completed');
     currentTaskBar.style.backgroundColor = '#17a2b8'; // Color para tarea completada
 
-    // Actualizar el estado de la tarea en tasksByDate
+    // Actualizar el estado de la tarea en `tasksByDate`
     const taskDate = currentTaskBar.dataset.taskDate;
     const taskName = currentTaskBar.dataset.taskName;
     tasksByDate[taskDate] = tasksByDate[taskDate].map(task =>
         task.name === taskName ? { ...task, status: 'completed' } : task
     );
 
+    // Guardar cambios en localStorage
     saveTasksToLocalStorage();
 
-    // Recalcular las posiciones de las tareas para asegurar consistencia
+    // Recalcular posiciones para asegurar consistencia visual
     recalculateTaskPositions();
 
     alert(`Tarea finalizada. Duración: ${durationMinutes} minutos.`);
 
+    // Resetear variables para la próxima tarea
     currentTaskBar = null;
     startTime = null;
 });
