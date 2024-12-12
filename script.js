@@ -778,5 +778,24 @@ calendarBar.addEventListener('touchmove', (event) => {
     }
 });
 
+// Hacer que el timeline permita desplazamiento horizontal en móviles
+timeline.addEventListener('touchstart', (event) => {
+    if (event.targetTouches.length === 1) {
+        // Guardamos la posición inicial del toque y el estado de scroll
+        timeline.dataset.scrollStartX = event.targetTouches[0].clientX;
+        timeline.dataset.scrollStartLeft = timeline.scrollLeft;
+    }
+});
+
+timeline.addEventListener('touchmove', (event) => {
+    if (event.targetTouches.length === 1) {
+        // Calculamos el desplazamiento horizontal
+        const deltaX = event.targetTouches[0].clientX - timeline.dataset.scrollStartX;
+        timeline.scrollLeft = timeline.dataset.scrollStartLeft - deltaX;
+
+        // Prevenimos el desplazamiento vertical de la página
+        event.preventDefault();
+    }
+});
 
 });
