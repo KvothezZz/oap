@@ -454,33 +454,29 @@ function generateTimeLabels() {
 
 // Recalcular las posiciones y tamaños de las barras
 function recalculateTaskPositions() {
-    const timelineWidth = timeline.offsetWidth; // Obtener el ancho actualizado del timeline
+    const timelineWidth = timeline.offsetWidth; // Ancho actual del timeline
     const totalMinutesInDay = 24 * 60; // Total de minutos en un día
 
-    // Función para ajustar la hora al nuevo rango horario (06:00 a 05:00)
+    // Función para ajustar las horas al rango del timeline (06:00 a 05:00)
     const adjustHourToTimeline = (hour) => (hour - 6 + 24) % 24;
 
-    // Limpiar todas las barras de tareas antes de recalcular posiciones
+    // Limpiar todas las barras de tareas antes de recalcular
     timeline.querySelectorAll('.taskBar').forEach(taskBar => taskBar.remove());
 
     // Recorrer tareas por fecha
     Object.entries(tasksByDate).forEach(([date, tasksForDate]) => {
         if (Array.isArray(tasksForDate)) {
             tasksForDate.forEach(task => {
-                // Ajustar las horas de inicio y fin
                 const startAdjustedHour = adjustHourToTimeline(task.startHour);
                 const endAdjustedHour = adjustHourToTimeline(task.endHour);
 
                 const startTotalMinutes = startAdjustedHour * 60 + task.startMinute;
                 const endTotalMinutes = endAdjustedHour * 60 + task.endMinute;
 
-                // Calcular posición inicial y ancho en píxeles
                 const taskStartPosition = (startTotalMinutes / totalMinutesInDay) * timelineWidth;
                 const taskWidth = ((endTotalMinutes - startTotalMinutes) / totalMinutesInDay) * timelineWidth;
 
-                // Validar ancho y posición
                 if (taskWidth > 0 && taskStartPosition >= 0) {
-                    // Crear la barra de tarea
                     const taskBar = document.createElement('div');
                     taskBar.classList.add('taskBar', task.category);
                     taskBar.style.position = 'absolute';
@@ -488,30 +484,34 @@ function recalculateTaskPositions() {
                     taskBar.style.width = `${taskWidth}px`;
                     taskBar.textContent = task.name;
 
-                    // Asociar información de la tarea al elemento (dataset)
+                    // Marcar estado de la tarea (inProgress o completed)
+                    if (task.status === 'inProgress') {
+                        taskBar.style.backgroundColor = '#10F9FF'; // Color para tareas en curso
+                    } else if (task.status === 'completed') {
+                        taskBar.style.backgroundColor = '#17a2b8'; // Color para tareas completadas
+                    }
+
                     taskBar.dataset.taskName = task.name;
-                    taskBar.dataset.taskDate = date; // Usamos la clave de fecha directamente
+                    taskBar.dataset.taskDate = date;
                     taskBar.dataset.startHour = task.startHour;
                     taskBar.dataset.startMinute = task.startMinute;
                     taskBar.dataset.endHour = task.endHour;
                     taskBar.dataset.endMinute = task.endMinute;
 
-                    // Añadir un evento click para mostrar información en la consola
-                    taskBar.addEventListener('click', () => {
-                        openTaskModal(task); // Llama a la función para abrir la ventana emergente
-                    });
+                    taskBar.addEventListener('click', () => openTaskModal(task));
 
-                    timeline.appendChild(taskBar); // Añadir la barra al timeline
-                } else {
-                    console.warn('Tarea inválida (posición o tamaño incorrectos):', task);
+                    timeline.appendChild(taskBar);
                 }
             });
-        } else {
-            console.error("tasksForDate no es un array:", tasksForDate);
         }
     });
 
-    console.log('Posiciones de tareas recalculadas según el nuevo tamaño del timeline.');
+    // Forzar el redibujado del timeline
+    timeline.style.display = 'none';
+    timeline.offsetHeight; // Trigger reflow
+    timeline.style.display = 'grid';
+
+    console.log('Posiciones de tareas recalculadas.');
 }
 
 // Ajustar etiquetas de tiempo al cargar y redimensionar
@@ -695,21 +695,32 @@ endButton.addEventListener('click', () => {
     const endTime = new Date();
     const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-    const timelineWidth = timeline.offsetWidth || window.innerWidth;
-    const hourWidth = timelineWidth / 24;
-    const minuteWidth = hourWidth / 60;
+    const timelineWidth = timeline.offsetWidth;
+    const totalMinutesInDay = 24 * 60;
 
-    const newWidth = Math.max(durationMinutes * minuteWidth, 5); // Ancho mínimo en píxeles
+    const newWidth = Math.max((durationMinutes / totalMinutesInDay) * timelineWidth, 5);
 
     currentTaskBar.style.width = `${newWidth}px`;
     currentTaskBar.classList.add('completed');
-    currentTaskBar.style.backgroundColor = '#17a2b8';
+    currentTaskBar.style.backgroundColor = '#17a2b8'; // Color para tarea completada
+
+    // Actualizar el estado de la tarea en tasksByDate
+    const taskDate = currentTaskBar.dataset.taskDate;
+    const taskName = currentTaskBar.dataset.taskName;
+    tasksByDate[taskDate] = tasksByDate[taskDate].map(task =>
+        task.name === taskName ? { ...task, status: 'completed' } : task
+    );
+
+    saveTasksToLocalStorage();
+
+    // Recalcular las posiciones de las tareas para asegurar consistencia
+    recalculateTaskPositions();
 
     alert(`Tarea finalizada. Duración: ${durationMinutes} minutos.`);
 
     currentTaskBar = null;
     startTime = null;
-}, { passive: false });
+});
 
 // Evento para borrar todas las tareas
 const clearTasksButton = document.getElementById('clearTasks');
