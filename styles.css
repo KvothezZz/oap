@@ -89,6 +89,7 @@ button:hover {
 #taskList li:last-child {
     border-bottom: none;
 }
+
 select {
     margin-top: 20px;
     padding: 5px;
@@ -97,18 +98,54 @@ select {
     border-radius: 5px;
 }
 
+/* Media Queries para pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem; /* Reduce el tamaño de la fuente para móviles */
+    }
+
+    button, #backToDailyTasks, #startTask, #endTask {
+        padding: 12px 25px; /* Aumenta el tamaño de los botones para facilitar su toque */
+        font-size: 1.1rem; /* Aumenta el tamaño de la fuente en los botones */
+    }
+
+    #taskLog {
+        width: 90%; /* Aumenta el ancho del contenedor de tareas en móviles */
+        margin-top: 15px;
+    }
+
+    #taskList li {
+        padding: 10px 15px; /* Aumenta el área clickeable */
+    }
+
+    select {
+        font-size: 1.1rem; /* Aumenta el tamaño de los inputs select */
+        padding: 10px;
+    }
+
+    /* Ajusta márgenes y padding generales */
+    body {
+        padding: 5px; /* Reduce el padding general para dar más espacio en pantalla */
+    }
+
+    .mainContent {
+        padding: 10px; /* Ajusta el contenido principal para que no se vea apretado */
+    }
+}
+
 label {
     margin-right: 10px;
     font-weight: bold;
 }
+
 /* Estilo para el menú desplegable */
 div {
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reducir el margen inferior */
 }
 
 label {
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 5px; /* Reducir el espacio entre el label y el input */
 }
 
 select {
@@ -117,6 +154,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 #clearTasks {
     margin-top: 20px;
     padding: 10px 20px;
@@ -131,6 +169,7 @@ select {
 #clearTasks:hover {
     background-color: #e63939;
 }
+
 .deleteTask {
     margin-left: 10px;
     padding: 5px;
@@ -145,6 +184,7 @@ select {
     color: #e63939;
     font-weight: bold;
 }
+
 #calendarBar {
     display: flex;
     justify-content: flex-start;
@@ -159,6 +199,7 @@ select {
     max-width: 70%; /* Reduce el ancho para que haya más espacio */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
 }
+
 .calendarContainer {
     display: flex;
     justify-content: center;
@@ -184,16 +225,46 @@ select {
     font-weight: bold;
 }
 
-.selectedDay {
-    background-color: #00b33c;
-    font-weight: bold;
-}
-
 #selectedDate {
     text-align: center;
     font-size: 1.2rem;
     font-weight: bold;
     margin-top: 10px;
+}
+
+/* Media Queries para pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px; /* Reduce el tamaño de la fuente */
+    }
+
+    /* Ajusta márgenes y padding para botones y select */
+    button, #clearTasks, #startTask, #endTask {
+        font-size: 1rem; /* Ajuste para ser más legible en móviles */
+        padding: 12px 25px;
+        font-size: 1.1rem;
+    }
+
+    #calendarBar {
+        flex-wrap: wrap; /* Permite que el calendario se ajuste mejor */
+        max-width: 90%; /* Aumenta el ancho */
+        margin: 10px auto; /* Centra el calendario */
+    }
+
+    .calendarDay {
+        font-size: 0.8rem; /* Reduce el tamaño de las fechas */
+        padding: 4px 8px;
+    }
+
+    /* Ajusta la apariencia de los botones */
+    .deleteTask, #clearTasks {
+        padding: 10px;
+        font-size: 1rem; /* Asegura que los botones sean más grandes */
+    }
+
+    #selectedDate {
+        font-size: 1.1rem; /* Ajusta el tamaño del texto */
+    }
 }
 
 #timeline {
@@ -246,8 +317,9 @@ select {
 }
 
 .taskBar.completed {
-    background-color: #17a2b8; /* Turquesa para Completadas */
+    background-color: #522E2D !important;
 }
+
 body {
     margin: 20px; /* Márgenes uniformes alrededor del contenido */
     font-family: Arial, sans-serif; /* Fuente limpia */
@@ -263,6 +335,7 @@ body {
     border-radius: 8px; /* Bordes redondeados */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombras suaves */
 }
+
 body {
     display: flex;
     margin: 0;
@@ -297,11 +370,84 @@ body {
     margin-top: 60px; /* Espacio más grande solo para el primer botón */
 }
 
+/* Media Queries para pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+    /* Ajustes generales */
+    body {
+        margin: 0;
+        font-size: 14px; /* Reduce el tamaño de la fuente para pantallas pequeñas */
+    }
+
+    .container {
+        padding: 10px; /* Reducir el espacio interno */
+    }
+
+    .sidebar {
+        width: 100%; /* La barra lateral ocupa todo el ancho */
+        height: auto; /* No debe ser tan grande en móviles */
+        position: fixed; /* Para que se mantenga fija en la pantalla */
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        gap: 5px;
+    }
+
+    .sidebar button {
+        font-size: 1rem; /* Botones un poco más grandes */
+        padding: 12px 20px;
+    }
+
+    #timeline {
+        width: 100%; /* El timeline debe ocupar todo el ancho en móviles */
+        grid-template-columns: repeat(12, 1fr); /* Reduce a 12 columnas para pantallas pequeñas */
+        height: 50px; /* Reduce la altura del timeline */
+    }
+
+    .taskBar {
+        font-size: 0.6rem; /* Ajusta el tamaño de la fuente para que encaje mejor */
+        height: 15px;
+    }
+
+    .taskBar.completed {
+        background-color: #522E2D !important;
+    }
+
+    #clearTasks {
+        font-size: 1rem;
+        padding: 12px 25px;
+        margin-top: 15px;
+        width: 100%; /* El botón ocupa todo el ancho */
+    }
+
+    .deleteTask {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    /* Ajustes en el calendario */
+    #calendarBar {
+        max-width: 100%;
+        margin: 10px auto;
+        overflow-x: auto;
+        padding: 10px 15px;
+    }
+
+    .calendarDay {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .calendarContainer {
+        flex-wrap: wrap; /* Permite que los días se ajusten mejor */
+        overflow-x: auto; /* Asegura que el calendario sea desplazable */
+    }
+}
 
 .mainContent {
     flex-grow: 1;
     padding: 20px;
 }
+
 /* Estilo del icono de menú */
 .menuToggle {
     font-size: 24px;
@@ -385,17 +531,47 @@ body {
     transform: translateX(10px); /* Animación de movimiento */
 }
 
+/* Ajustes para pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+    .menuToggle {
+        font-size: 20px; /* Reduce el tamaño del icono */
+        top: 15px;
+        left: 15px;
+    }
 
-.mainContent {
-    margin-left: 0;
-    transition: margin-left 0.3s ease; /* Animación suave para el contenido */
-    padding-left: 20px; /* Agrega espacio para separar la barra lateral del contenido */
-    padding-right: 20px; /* Agrega margen a la derecha para el diseño general */
-}
+    .sidebar {
+        width: 200px; /* Reduce el tamaño de la barra lateral */
+        top: 0;
+        left: -200px; /* Mueve la barra lateral fuera de la pantalla */
+    }
 
-.sidebar.show ~ .mainContent {
-    margin-left: 260px; /* Empuja el contenido hacia la derecha cuando la barra lateral está activa */
+    .sidebar.show {
+        left: 0; /* Muestra la barra lateral */
+    }
 
+    .mainContent {
+        margin-left: 0;
+        padding-left: 15px; /* Menos espacio en el contenido cuando la barra lateral está visible */
+        padding-right: 15px;
+    }
+
+    /* Ajusta el contenido principal para ser más adecuado en móviles */
+    .sidebar.show ~ .mainContent {
+        margin-left: 0; /* No empujes el contenido cuando la barra lateral está activa */
+    }
+
+    .sidebar button {
+        font-size: 1rem;
+        padding: 12px 20px; /* Botones más grandes en móviles */
+    }
+
+    .menuToggle {
+        font-size: 20px; /* Asegura que el botón de menú sea más pequeño en móviles */
+    }
+
+    .sidebar {
+        width: 200px; /* Ajusta el tamaño de la barra lateral */
+    }
 }
 
 #timeLabels {
@@ -441,10 +617,9 @@ body {
     position: relative; /* Mantiene posición para el span */
 }
 
-
 .hourCell span {
     position: absolute;
-    bottom: -15px; /* Mueve los números un poco más abajo */
+    bottom: 0px; /* Mueve los números un poco más abajo */
     left: 0;
     width: 100%;
     font-size: 0.7rem;
@@ -455,7 +630,7 @@ body {
 
 .hourMark {
     position: absolute;
-    bottom: -33.5px; /* Ajustado para estar cerca de los números */
+    bottom: -9px; /* Ajustado para estar cerca de los números */
     left: 0; /* Posicionado al borde izquierdo de la celda */
     height: 10px; /* Altura de la línea */
     width: 0.5px; /* Grosor uniforme */
@@ -489,7 +664,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
 }
 
 .modal-content {
@@ -497,21 +672,54 @@ body {
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%;
+    width: 25%; /* Cambiado a la mitad del ancho original */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+    max-width: 600px; /* Garantiza que no sea demasiado grande en pantallas amplias */
+    min-width: 300px; /* Asegura que sea funcional en pantallas pequeñas */
 }
 
 .close {
-    color: #aaa;
+    color: #888; /* Color del botón */
     float: right;
-    font-size: 28px;
+    font-size: 24px; /* Tamaño de fuente ajustado */
     font-weight: bold;
     cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #555; /* Color más oscuro al pasar el ratón */
     text-decoration: none;
+}
+
+/* Media Queries para pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+    /* Ajustes para el diseño del timeline */
+    #timeLabels {
+        flex-wrap: wrap; /* Permite que las etiquetas de tiempo se ajusten */
+        max-width: 100%; /* Elimina el límite de ancho */
+        margin: 0 auto; /* Centra los elementos */
+        padding: 0 10px; /* Menos padding */
+    }
+
+    .timeLabel {
+        font-size: 0.6rem; /* Reduce el tamaño de texto para pantallas pequeñas */
+        padding: 0 5px;
+    }
+
+    /* Ajustes en la ventana emergente */
+    .modal-content {
+        width: 90%; /* Ocupa más espacio en móviles */
+        min-width: 260px; /* Minimiza el ancho para pantallas pequeñas */
+    }
+
+    /* Ajustes en los campos de hora */
+    #startTime, #endTime, #customStartTime, #customEndTime {
+        width: 70px; /* Hace los campos de hora más pequeños */
+    }
+
+    #customTaskComment {
+        width: 80%; /* Ocupa más espacio en móviles */
+    }
 }
