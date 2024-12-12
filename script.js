@@ -587,7 +587,35 @@ timeline.appendChild(taskBar);
 
     timeline.appendChild(taskBar);
 
+    // Mostrar alerta de creación de tarea solo en móviles
+if (window.innerWidth <= 768) { // Solo para pantallas pequeñas
+    const existingAlerts = document.querySelectorAll('.task-created-alert');
+    existingAlerts.forEach(alert => alert.remove()); // Elimina alertas duplicadas
+
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'task-created-alert';
+    alertDiv.textContent = `Tarea creada para el ${selectedDate} de ${startHour}:${startMinute.toString().padStart(2, '0')} a ${endHour}:${endMinute.toString().padStart(2, '0')}`;
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.bottom = '20px';
+    alertDiv.style.left = '50%';
+    alertDiv.style.transform = 'translateX(-50%)';
+    alertDiv.style.padding = '10px 20px';
+    alertDiv.style.backgroundColor = '#036105';
+    alertDiv.style.color = '#fff';
+    alertDiv.style.borderRadius = '5px';
+    alertDiv.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+    alertDiv.style.zIndex = '1000';
+
+    document.body.appendChild(alertDiv);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000); // La alerta desaparecerá después de 3 segundos
+} else {
+    // Para pantallas grandes, usa alert normal
     alert(`Tarea creada para el ${selectedDate} de ${startHour}:${startMinute.toString().padStart(2, '0')} a ${endHour}:${endMinute.toString().padStart(2, '0')}`);
+}
+
 });
 
 // Evento para iniciar tarea
