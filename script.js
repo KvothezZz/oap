@@ -653,71 +653,63 @@ if (window.innerWidth <= 768) { // Solo para pantallas pequeñas
 
 // Evento para iniciar tarea
 startButton.addEventListener('click', () => {
-    // Comprueba si hay una tarea en curso
     if (currentTaskBar) {
         alert("Ya hay una tarea en curso. Por favor, finalízala antes de iniciar otra.");
         return;
     }
 
-    // Encuentra la tarea más cercana en el timeline
-    const taskBars = document.querySelectorAll('.taskBar:not(.completed)'); // Tareas no completadas
+    const taskBars = document.querySelectorAll('.taskBar:not(.completed)');
     if (taskBars.length === 0) {
         alert("No quedan tareas por iniciar.");
         return;
     }
 
-    // Selecciona la tarea más cercana
     let closestTask = taskBars[0];
-    let closestLeft = parseFloat(closestTask.style.left);
+    let closestLeft = parseFloat(closestTask.style.left) || 0;
+
     taskBars.forEach(task => {
-        const taskLeft = parseFloat(task.style.left);
+        const taskLeft = parseFloat(task.style.left) || 0;
         if (taskLeft < closestLeft) {
             closestTask = task;
             closestLeft = taskLeft;
         }
     });
 
-    // Asegurar que el color y estado de inicio sean coherentes
-    closestTask.style.backgroundColor = '#10F9FF'; // Color para tarea iniciada
-    closestTask.dataset.status = 'inProgress'; // Marca como en curso
+    // Ajustar color para tarea iniciada
+    closestTask.style.backgroundColor = '#10F9FF';
+    closestTask.dataset.status = 'inProgress';
 
-    // Marca la tarea seleccionada como actual
     currentTaskBar = closestTask;
-    startTime = new Date(); // Registra la hora de inicio
+    startTime = new Date();
+
     alert(`La tarea "${currentTaskBar.textContent}" ha sido iniciada.`);
-});
+}, { passive: false }); // Asegurar que los eventos táctiles no interfieran
 
 
-// Evento para finalizar tarea
 endButton.addEventListener('click', () => {
     if (!currentTaskBar) {
         alert("No hay ninguna tarea en curso para finalizar.");
         return;
     }
 
-    // Calcula la duración real de la tarea
     const endTime = new Date();
-    const durationMinutes = Math.round((endTime - startTime) / 60000); // Duración en minutos
+    const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-    // Ajusta el ancho de la barra de tarea según la duración real
-    const timelineWidth = timeline.offsetWidth;
+    const timelineWidth = timeline.offsetWidth || window.innerWidth;
     const hourWidth = timelineWidth / 24;
     const minuteWidth = hourWidth / 60;
 
-    // Cálculo dinámico del tamaño con un ancho mínimo proporcional
-    const newWidth = Math.max(durationMinutes * minuteWidth, 2); // El mínimo ahora es 5px, ajustable
+    const newWidth = Math.max(durationMinutes * minuteWidth, 5); // Ancho mínimo en píxeles
 
     currentTaskBar.style.width = `${newWidth}px`;
-
-    // Marca la tarea como completada
     currentTaskBar.classList.add('completed');
-    currentTaskBar.style.backgroundColor = '#17a2b8'; // Indica que está completada
-    alert(`Tarea finalizada. Duración real: ${durationMinutes} minutos.`);
+    currentTaskBar.style.backgroundColor = '#17a2b8';
 
-    // Libera la referencia de la tarea en curso
+    alert(`Tarea finalizada. Duración: ${durationMinutes} minutos.`);
+
     currentTaskBar = null;
     startTime = null;
-});
+}, { passive: false });
 
 // Evento para borrar todas las tareas
 const clearTasksButton = document.getElementById('clearTasks');
