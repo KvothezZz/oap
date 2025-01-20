@@ -361,6 +361,10 @@
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.3s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     button:hover {
@@ -500,6 +504,10 @@
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     /* Add dropdown arrow */
@@ -877,6 +885,13 @@
     * {
         transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
+
+    .task-bar, .calendar-button, button, input, select {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+    }
 </style>
 </head>
 <body>
@@ -1060,31 +1075,34 @@
         </div>
     </div>
 
-<script>
-function handleTouchInteraction(element, clickHandler) {
-  let touchStartY = 0;
+<script>function handleTouchInteraction(element, clickHandler) {
+  let touchStarted = false;
   let touchMoved = false;
   const touchThreshold = 5;
-
-  element.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
+  let startY;
+  element.addEventListener('touchstart', e => {
+    touchStarted = true;
     touchMoved = false;
+    startY = e.touches[0].clientY;
   });
-
-  element.addEventListener('touchmove', (e) => {
-    const touchCurrentY = e.touches[0].clientY;
-    if (Math.abs(touchCurrentY - touchStartY) > touchThreshold) {
+  element.addEventListener('touchmove', e => {
+    if (!touchStarted) return;
+    const currentY = e.touches[0].clientY;
+    if (Math.abs(currentY - startY) > touchThreshold) {
       touchMoved = true;
     }
   });
-
-  element.addEventListener('touchend', (e) => {
-    if (!touchMoved) {
+  element.addEventListener('touchend', e => {
+    if (touchStarted && !touchMoved) {
       clickHandler(e);
     }
+    touchStarted = false;
+  });
+  element.addEventListener('touchcancel', () => {
+    touchStarted = false;
+    touchMoved = false;
   });
 }
-
 function loadCategories() {
   let categoryColors = JSON.parse(localStorage.getItem('category-colors')) || {
     'Work': '#055C25',
@@ -1570,7 +1588,7 @@ function renderTimelineBars() {
     } else {
       taskBar.title = task.name;
     }
-    handleTouchInteraction(taskBar, (e) => {
+    handleTouchInteraction(taskBar, e => {
       e.preventDefault();
       showTaskDetails(task.id);
     });
@@ -1691,19 +1709,17 @@ window.onload = function () {
       hamburger.classList.remove('active');
     }
   });
-  document.addEventListener('touchmove', (e) => {
-    if (e.target.classList.contains('task-bar') || 
-        e.target.classList.contains('calendar-button') ||
-        e.target.tagName === 'BUTTON' ||
-        e.target.tagName === 'INPUT' ||
-        e.target.tagName === 'SELECT') {
+  document.addEventListener('touchmove', e => {
+    if (e.target.classList.contains('task-bar') || e.target.classList.contains('calendar-button') || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
       e.stopPropagation();
     }
-  }, { passive: true });
+  }, {
+    passive: true
+  });
   function adjustTaskBarClickHandling() {
     const taskBars = document.querySelectorAll('.task-bar');
     taskBars.forEach(bar => {
-      handleTouchInteraction(bar, (e) => {
+      handleTouchInteraction(bar, e => {
         e.preventDefault();
         const taskId = parseInt(bar.dataset.taskId);
         showTaskDetails(taskId);
@@ -1711,7 +1727,7 @@ window.onload = function () {
     });
   }
   adjustTaskBarClickHandling();
-}
+};
 function toggleMenu() {
   const menu = document.querySelector('.side-menu');
   const hamburger = document.querySelector('.hamburger-menu');
@@ -1963,8 +1979,7 @@ function showTasksForDate(dateStr) {
   });
   taskContainer.appendChild(dateGroup);
   modalContent.appendChild(taskContainer);
-}
-</script>
+}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
